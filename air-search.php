@@ -24,7 +24,7 @@ function enqueue_scripts() {
 } // end enqueue_scripts
 
 add_action( 'rest_api_init', function () {
-  register_rest_route( 'air-search/v1', '/(?P<location>[a-zA-Z0-9-]+)/(?P<search>[a-zA-Z0-9-]+)?', array(
+  register_rest_route( 'air-search/v1', '/(?P<location>[a-zA-Z0-9-]+)/(?P<search>[a-zA-Z0-9-\p{L}\%]+)?', array(
     'permission_callback' => '__return_true',
     'methods' => 'GET',
     'callback' => __NAMESPACE__ . '\search_query',
@@ -84,7 +84,7 @@ function search_query( $params ) {
 
   $items = [];
   $total_items = [];
-  foreach ( $search_locations[ $search_location ]['post_types'] as $post_type => $v ) {
+  foreach ( $search_locations[ $search_location ]['post_types'] as $target => $post_type ) {
     $args['post_type'] = $post_type;
     $args = apply_filters( 'air_search_query_args', $args, $post_type );
     $search_query = new \WP_Query( $args );
@@ -93,13 +93,21 @@ function search_query( $params ) {
       continue;
     }
 
-    $total_items[ $post_type ] = count( $search_query->posts );
+    // If post type is array of post types, join them so they can be used as a key
+    if ( is_array( $post_type ) ) {
+      $post_type = join( ', ', $post_type );
+    }
+    $total_items[] = [
+      'post_type' => $post_type,
+      'target'    => $target,
+      'count'     => count( $search_query->posts ),
+    ];
 
     foreach ( $search_query->posts as $id ) {
       $items[] = apply_filters( 'air_search_item_data', [
         'id'        => $id,
-        'post_type' => $post_type,
-        'target'    => $v,
+        'post_type' => get_post_type( $id ),
+        'target'    => $target,
         'html'      => get_search_item_html( $id ),
       ], $id );
     }
