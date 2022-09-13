@@ -36,17 +36,72 @@ function search_query( $params ) {
     return [];
   }
 
-  $search_location = $params->get_param( 'location' );
+  $data = [
+    'location' => $params->get_param( 'location' ),
+    'search'   => $params->get_param( 'search' ),
+  ];
+
+  $search_results = do_search_query( $data );
+
+  return wp_json_encode( $search_results );
+} // end search_query
+
+function get_search_item_html( $id ) {
+  $item_post_type = get_post_type( $id );
+
+  $template_path = locate_template( "templates/air-search-item-{$item_post_type}.php" );
+  if ( empty( $template_path ) ) {
+    $template_path = locate_template( 'templates/air-search-item-default.php' );
+  }
+
+  if ( empty( $template_path ) ) {
+    $template_path = plugin_dir_path( __FILE__ ) . 'templates/air-search-item-default.php';
+  }
+
+  ob_start();
+  include $template_path;
+  return ob_get_clean();
+} // end get_search_item_html
+
+add_filter( 'pre_get_posts', __NAMESPACE__ . '\maybe_modify_search_query' );
+function maybe_modify_search_query( $query ) {
+  if ( $query->is_main_query() ) {
+    return;
+  }
+
+  if ( ! is_search() ) {
+    return;
+  }
+
+  if ( ! isset( $_GET['airloc'] ) ) {
+    return;
+  }
+
+  if ( ! isset( \THEME_SETTINGS['search_locations'][ $_GET['airloc'] ] ) ) {
+    return;
+  }
+
+  $query->set( 'post_per_page', 1 );
+  $query->set( 'update_post_meta_cache', false );
+  $query->set( 'update_post_term_cache', false );
+
+} // end maybe_modify_search_query
+
+function do_search_query( $params ) {
+  if ( ! defined( 'THEME_SETTINGS' ) ) {
+    return [];
+  }
+
+  $search_location = $params['location'];
 
   $search_locations = THEME_SETTINGS['search_locations'];
   if ( ! array_key_exists( $search_location, $search_locations ) ) {
-    wp_send_json_error( 'Search location does not exist.' );
     return;
   }
 
   $args = wp_parse_args( $search_locations[ $search_location ]['query_args'], [
-    's' => $params->get_param( 'search' ),
-    'relevanssi' => true,
+    's' => $params['search'],
+    'paged' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
     'fields' => 'ids',
   ] );
 
@@ -84,10 +139,19 @@ function search_query( $params ) {
 
   $items = [];
   $total_items = [];
+  $max_pages = 0;
   foreach ( $search_locations[ $search_location ]['post_types'] as $target => $post_type ) {
     $args['post_type'] = $post_type;
     $args = apply_filters( 'air_search_query_args', $args, $post_type );
-    $search_query = new \WP_Query( $args );
+    if ( function_exists( 'relevanssi_do_query' ) ) {
+      // Use relevanssi_do_query so we get correct value for found_posts, since it doesnt work correctly if using normal query with "relevanssi => true"
+      $search_query = new \WP_Query();
+      $search_query->parse_query( $args );
+      relevanssi_do_query( $search_query );
+    } else {
+      // Normal query if relevanssi is not active
+      $search_query = new \WP_Query( $args );
+    }
 
     if ( ! $search_query->have_posts() ) {
       continue;
@@ -103,6 +167,10 @@ function search_query( $params ) {
       'count'     => count( $search_query->posts ),
     ];
 
+    if ( $max_pages < $search_query->max_num_pages ) {
+      $max_pages = $search_query->max_num_pages;
+    }
+
     foreach ( $search_query->posts as $id ) {
       $items[] = apply_filters( 'air_search_item_data', [
         'id'        => $id,
@@ -114,32 +182,22 @@ function search_query( $params ) {
   }
 
   if ( empty( $items ) ) {
-    wp_send_json_error( 'No search results found.' );
+    return;
   }
 
   $output = [
-    'current_page' => 0,
-    'max_pages'    => $search_query->max_num_pages,
+    'current_page' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
+    'found_posts' => $search_query->found_posts,
+    'max_pages'    => $max_pages,
     'total_items'  => $total_items,
     'items'        => $items,
+    'pagination'   => paginate_links( [
+      'base' => '%_%',
+      'format' => '?air-page=%#%',
+      'current' => max( 1, $_GET['air-page'] ),
+      'total' => $max_pages,
+    ] ),
   ];
 
-  return wp_json_encode( $output );
-} // end search_query
-
-function get_search_item_html( $id ) {
-  $item_post_type = get_post_type( $id );
-
-  $template_path = locate_template( "air-search-item-{$item_post_type}.php" );
-  if ( empty( $template_path ) ) {
-    $template_path = locate_template( 'air-search-item-default.php' );
-  }
-
-  if ( empty( $template_path ) ) {
-    $template_path = plugin_dir_path( __FILE__ ) . 'air-search-item-default.php';
-  }
-
-  ob_start();
-  include $template_path;
-  return ob_get_clean();
-} // end get_search_item_html
+  return $output;
+} // end do_search_query
