@@ -12,22 +12,27 @@ searchForm.addEventListener('submit', (event) => {
     }
   });
 
+  document.querySelector('[class*="fallback"]').style.display = 'none';
+  document.querySelector('[class*="fallback"]').setAttribute('aria-hidden', 'true');
+
   if (searchText && location) {
-    showDiv('loading');
     callApi(searchText, location, args);
   } else {
     showDiv('start');
     clearItems();
     clearItemCounts();
+    clearPagination();
   }
 });
 
 async function callApi(searchText, location, args) {
+  showDiv('loading');
   const apiBase = 'wp-json/air-search/v1/';
   const res = await fetch(`${apiBase + location}/${searchText}${args}`, { method: 'GET' });
 
   window.history.pushState(null, '', `${args}s=${searchText}&airloc=${location}`);
   clearItemCounts();
+  clearPagination();
   if (!res.ok) {
     showDiv('no-results');
     clearItems();
@@ -42,15 +47,16 @@ async function callApi(searchText, location, args) {
   }
 
   showDiv('results');
-  printItems(output);
+  printItems(output, searchText, location, args);
 }
 
-function printItems(results) {
+function printItems(results, searchText, location, args) {
   clearItems();
   hideResultContainers();
-
   const data = JSON.parse(results);
+
   updateItemCounts(data.total_items);
+  updatePagination(data.pagination, searchText, location, args);
   data.items.forEach((item) => {
     const targetParent = document.querySelector(`.${item.target}`);
     targetParent.style.display = '';
@@ -134,13 +140,28 @@ function hideResultContainers() {
   }
 }
 
-const pagination = document.querySelectorAll('.air-search-pagination a.page-numbers');
-pagination.forEach((element) => {
-  element.addEventListener('click', (event) => {
-    event.preventDefault();
-    const pageNumber = event.target.href.match('air-page=([0-9]+)');
-    if (pageNumber) {
-      console.log(pageNumber[1]);
-    }
+function updatePagination(newPagination, searchText, location, args) {
+  const pagDiv = document.querySelector('.air-search-pagination');
+  args = args.replace(/&?air-page=[0-9]+&?/i, '');
+  if (pagDiv) {
+    pagDiv.innerHTML = newPagination;
+  }
+
+  pagDiv.querySelectorAll('a.page-numbers').forEach((element) => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      const pageNumber = event.target.href.match('air-page=([0-9]+)');
+      if (pageNumber) {
+        args += `air-page=${pageNumber[1]}&`;
+      }
+
+      callApi(searchText, location, args);
+    });
   });
-});
+}
+
+function clearPagination() {
+  const pagDiv = document.querySelector('.air-search-pagination');
+  pagDiv.innerHTML = '';
+}

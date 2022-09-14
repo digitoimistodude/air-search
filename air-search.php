@@ -42,7 +42,11 @@ function search_query( $params ) {
   ];
 
   $search_results = do_search_query( $data );
+  if ( empty( $search_results ) ) {
+    wp_send_json_error( 'No search results found.' );
+  }
 
+  // return $search_results;
   return wp_json_encode( $search_results );
 } // end search_query
 
@@ -192,9 +196,8 @@ function do_search_query( $params ) {
     'total_items'  => $total_items,
     'items'        => $items,
     'pagination'   => paginate_links( [
-      'base' => '%_%',
-      'format' => '?air-page=%#%',
-      'current' => max( 1, $_GET['air-page'] ),
+      'base' => '?air-page=%#%',
+      'current' => max( 1, isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1 ),
       'total' => $max_pages,
     ] ),
   ];
