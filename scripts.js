@@ -12,8 +12,10 @@ searchForm.addEventListener('submit', (event) => {
     }
   });
 
-  document.querySelector('[class*="fallback"]').style.display = 'none';
-  document.querySelector('[class*="fallback"]').setAttribute('aria-hidden', 'true');
+  const fallbackResults = document.querySelector('[class*="fallback"]');
+  if (fallbackResults) {
+    fallbackResults.style.display = 'none';
+  }
 
   if (searchText && location) {
     callApi(searchText, location, args);
@@ -106,27 +108,22 @@ function showDiv(divToShow) {
 
   if (loading) {
     loading.style.display = 'none';
-    loading.setAttribute('aria-hidden', 'true');
   }
 
   if (noResults) {
     noResults.style.display = 'none';
-    noResults.setAttribute('aria-hidden', 'true');
   }
 
   if (results) {
     results.style.display = 'none';
-    results.setAttribute('aria-hidden', 'true');
   }
 
   if (start) {
     start.style.display = 'none';
-    start.setAttribute('aria-hidden', 'true');
   }
 
   if (document.querySelector(`.air-search-${divToShow}`)) {
     document.querySelector(`.air-search-${divToShow}`).style.display = '';
-    document.querySelector(`.air-search-${divToShow}`).setAttribute('aria-hidden', 'true');
   }
 }
 
