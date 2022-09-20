@@ -21,6 +21,14 @@ const PLUGIN_VERSION = '0.1.0';
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts' );
 function enqueue_scripts() {
   wp_enqueue_script( 'air-search-scripts', plugin_dir_url( __FILE__ ) . 'scripts.js', [], filemtime( plugin_dir_path( __FILE__ ) . 'scripts.js' ), true );
+  wp_localize_script( 'air-search-scripts', 'air_search_elements', [
+    'search_form_id' => apply_filters( 'air_search_form_id', 'air-search-form' ),
+    'results_container_id' => apply_filters( 'air_search_results_container_id', 'air-search-results' ),
+    'items_container_id' => apply_filters( 'air_search_items_container_id', 'items' ),
+    'pagination_id' => apply_filters( 'air_search_pagination_id', 'air-search-pagination' ),
+    'fallback_id' => apply_filters( 'air_search_fallback_id', 'air-search-fallback' ),
+    'typing_time' => apply_filters( 'air_search_type_time', 500 ),
+  ] );
 } // end enqueue_scripts
 
 add_action( 'rest_api_init', function () {
@@ -46,7 +54,6 @@ function search_query( $params ) {
     wp_send_json_error( 'No search results found.' );
   }
 
-  // return $search_results;
   return wp_json_encode( $search_results );
 } // end search_query
 
@@ -120,13 +127,13 @@ function do_search_query( $params ) {
 
       if ( 'meta' === $data['type'] ) {
         $meta_query[] = [
-          'key'   => $data['value'],
+          'key'   => $data['key'],
           'value' => $_GET[ $field_key ],
         ];
       } elseif ( 'tax' === $data['type'] ) {
         $tax_query[] = [
-          'taxonomy' => $data['value'],
-          'field'     => 'term_id',
+          'taxonomy' => $data['taxonomy'],
+          'field'     => isset( $data['field'] ) ? $data['field'] : 'term_id',
           'terms'    => $_GET[ $field_key ],
         ];
       }
@@ -193,8 +200,8 @@ function do_search_query( $params ) {
     'current_page' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
     'found_posts' => $search_query->found_posts,
     'max_pages'    => $max_pages,
-    'total_items'  => $total_items,
-    'items'        => $items,
+    'total_items'  => apply_filters( 'air_search_query_total_items', $total_items ),
+    'items'        => apply_filters( 'air_search_query_items', $items ),
     'pagination'   => paginate_links( [
       'base' => '?air-page=%#%',
       'current' => max( 1, isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1 ),
@@ -202,5 +209,5 @@ function do_search_query( $params ) {
     ] ),
   ];
 
-  return $output;
+  return apply_filters( 'air_search_query_result', $output );
 } // end do_search_query
