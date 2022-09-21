@@ -38,9 +38,13 @@ Only `post_types` is required.
 `post_types` is where you specify what post types go in what containers. In the example above, `post_type1` will be placed in a element with id of `container-for-post-type-1`. You can also set multiple post types to the same element.
 
 `field_mappings` allows you to add taxonomy and meta queries to your search.
+
   Key of the mapping array has to be used in your input/select field as the name.
+  
   `type` field takes either "meta" or "tax" depending on which query you want to use.
+  
     For meta queries you only need to add your meta field as `key`.
+    
     For taxonomy queries you need to add your taxonomy and optionally `field` to select taxonomies by the value set (default is term_id).
 
 
