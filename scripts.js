@@ -100,7 +100,7 @@ function printItems(data, searchText, location, args) {
   updateItemCounts(data.total_items);
   updatePagination(data.pagination, searchText, location, args);
   data.items.forEach((item) => {
-    const targetParent = document.querySelector(`.${item.target}`);
+    const targetParent = document.querySelector(`#${item.target}`);
     targetParent.style.display = '';
     const targetElement = targetParent.querySelector(`#${air_search_settings.items_container_id}`);
     if (targetElement) {
