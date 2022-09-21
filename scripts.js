@@ -36,6 +36,10 @@ searchForm.addEventListener('submit', (event) => {
 searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
   if (event.keyCode === 27) {
     event.target.value = '';
+    showDiv('start');
+    clearItems();
+    clearItemCounts();
+    clearPagination();
   }
 });
 
@@ -46,9 +50,9 @@ if (Number.isInteger(doneTypingInterval)) {
   let typingTimer;
   searchField.addEventListener('input', () => {
     clearTimeout(typingTimer);
-    if (searchField.value) {
-      typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
-    }
+    // if (searchField.value) {
+    typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+    // }
   });
 }
 
