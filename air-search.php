@@ -27,7 +27,7 @@ function enqueue_scripts() {
     'items_container_id' => apply_filters( 'air_search_items_container_id', 'items' ),
     'pagination_id' => apply_filters( 'air_search_pagination_id', 'air-search-pagination' ),
     'fallback_id' => apply_filters( 'air_search_fallback_id', 'air-search-fallback' ),
-    'typing_time' => apply_filters( 'air_search_type_time', 500 ),
+    'typing_time' => apply_filters( 'air_search_type_time', 250 ),
   ] );
 } // end enqueue_scripts
 
@@ -50,9 +50,6 @@ function search_query( $params ) {
   ];
 
   $search_results = do_search_query( $data );
-  if ( empty( $search_results ) ) {
-    wp_send_json_error( 'No search results found.' );
-  }
 
   return wp_json_encode( $search_results );
 } // end search_query
@@ -95,7 +92,6 @@ function maybe_modify_search_query( $query ) {
   $query->set( 'post_per_page', 1 );
   $query->set( 'update_post_meta_cache', false );
   $query->set( 'update_post_term_cache', false );
-
 } // end maybe_modify_search_query
 
 function do_search_query( $params ) {
@@ -192,11 +188,8 @@ function do_search_query( $params ) {
     }
   }
 
-  if ( empty( $items ) ) {
-    return;
-  }
-
   $output = [
+    'search_text' => $params['search'],
     'current_page' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
     'found_posts' => $search_query->found_posts,
     'max_pages'    => $max_pages,

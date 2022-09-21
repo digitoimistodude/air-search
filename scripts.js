@@ -3,10 +3,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 
+let latestSearchText;
 const searchForm = document.querySelector(`#${air_search_elements.search_form_id}`);
 searchForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const searchText = event.target.querySelector('input[name="s"]').value;
+  latestSearchText = searchText;
   const { location } = event.target.dataset;
   let args = '?';
   event.target.querySelectorAll('select, input[type="checkbox"]:checked, input[type="radio"]:checked').forEach((select) => {
@@ -30,6 +32,7 @@ searchForm.addEventListener('submit', (event) => {
   }
 });
 
+// Clear the textfield when pressing the escape key
 searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
   if (event.keyCode === 27) {
     event.target.value = '';
@@ -67,8 +70,13 @@ async function callApi(searchText, location, args) {
     return;
   }
 
-  const output = await res.json();
-  if (output.success === false) {
+  const outputRaw = await res.json();
+  const output = JSON.parse(outputRaw);
+  if (latestSearchText !== output.search_text) {
+    return;
+  }
+
+  if (output.found_posts === 0) {
     showDiv('no-results');
     clearItems();
     return;
@@ -78,10 +86,9 @@ async function callApi(searchText, location, args) {
   printItems(output, searchText, location, args);
 }
 
-function printItems(results, searchText, location, args) {
+function printItems(data, searchText, location, args) {
   clearItems();
   hideResultContainers();
-  const data = JSON.parse(results);
 
   updateItemCounts(data.total_items);
   updatePagination(data.pagination, searchText, location, args);
