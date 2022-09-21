@@ -48,7 +48,23 @@ Only `post_types` is required.
 
 ### Search form
 
-Add your search location to the form element as a data-attribute and id as `air-search-form`(can be changed with hooks).
+Add your search location to the form element as `data-location` and id as `air-search-form`(can be changed with hooks).
 ```html
   <form class="search-form" data-location="general" id="air-search-form">
+```
+* Search field should have its `name` as `s`
+* Make sure your inputs/selects names are same as in `field_mappings`
+  * Supported inputs are radio and checkbox
+
+### Search results
+
+For each post type location you need to make the following html.
+* wrapper with id set in `your_location['post_types']`
+  * `<ul>` with id as `items`(id can be changed with hooks)
+  * element with id "count" can be added to get count of the results.
+```html
+  <div id="container-for-post-type-1" style="display:none">
+    <span id="count"></span>
+    <ul class="items" id="items"></ul>
+  </div>
 ```
