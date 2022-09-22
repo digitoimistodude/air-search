@@ -7,7 +7,7 @@
  * Author URI: https://dude.fi
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 0.1.0
+ * Version: 1.0.0
  *
  * @package air-search
  */
@@ -16,7 +16,7 @@ namespace Air_Search;
 
 defined( 'ABSPATH' ) || exit;
 
-const PLUGIN_VERSION = '0.1.0';
+const PLUGIN_VERSION = '1.0.0';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
 
