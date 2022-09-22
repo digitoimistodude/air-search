@@ -53,6 +53,9 @@ Add your search location to the form element as `data-location` and id as `air-s
   <form class="search-form" data-location="general" id="air-search-form">
 ```
 * Search field should have its `name` as `s`
+```html
+  <input type="text" name="s">
+````
 * Make sure your inputs/selects names are same as in `field_mappings`
   * Supported inputs are radio and checkbox
 
