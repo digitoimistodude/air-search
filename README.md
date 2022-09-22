@@ -78,6 +78,10 @@ For each post type you need to make the following html.
   </div>
 ```
 
+Search result items by default use a template from the plugin.
+This template can be overridden by adding a file `youtheme/templates/air-search-item-default.php`
+Each post type can have their own template by adding a file `yourtheme/templates/air-search-item-{your-post-type}.php`
+
 ### Search fallback
 
 To make links to search results work you need to create a backup query and container for its results. Fallback results container needs to have its id set to `air-search-fallback`(can be changed with hooks) so it can be hidden when user does a new search.
