@@ -80,7 +80,7 @@ For each post type you need to make the following html.
 
 Search result items by default use a template from the plugin.
 
-This template can be overridden by adding a file `youtheme/templates/air-search-item-default.php`
+Default template can be overridden by adding a file `youtheme/templates/air-search-item-default.php`
 
 Each post type can have their own template by adding a file `yourtheme/templates/air-search-item-{your-post-type}.php`
 
