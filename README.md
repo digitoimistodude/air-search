@@ -201,6 +201,7 @@ Alot of the elements need to be hidden by default, so they dont flicker when loa
 
 ### Other filters
 
+* `add_filters( 'air_search_location_data', $location )` Used to set/edit search location data.
 * `add_filters( 'air_search_type_time', $time_in_ms )` Filter for changing the time untill a search is triggered after user has stopped typing. Set in milliseconds. Default 250.
 * `add_filters( 'air_search_item_template', $template_path, $item_post_type, $id )` Allows modifying of the item template.
 * `add_filters( 'air_search_query_args', $args, $post_type, $search_location )` Allows modifying of the search query. Can be used to modify only a specific post types query.
