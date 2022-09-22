@@ -163,8 +163,8 @@ function showDiv(divToShow) {
     start.style.display = 'none';
   }
 
-  if (document.querySelector(`.air-search-${divToShow}`)) {
-    document.querySelector(`.air-search-${divToShow}`).style.display = '';
+  if (document.querySelector(`#air-search-${divToShow}`)) {
+    document.querySelector(`#air-search-${divToShow}`).style.display = '';
 
     if (searchTextElement && (divToShow === 'start' || divToShow === 'loading')) {
       searchTextElement.style.display = 'none';

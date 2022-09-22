@@ -2,8 +2,17 @@
 
 namespace Air_Search;
 
+function get_location_data() {
+  $location = [];
+  if ( defined( 'THEME_SETTINGS' ) ) {
+    $location = THEME_SETTINGS['search_locations'];
+  }
+
+  return apply_filters( 'air_search_location_data', $location );
+} // end get_location_data
+
 function search_query( $params ) {
-  if ( ! defined( 'THEME_SETTINGS' ) ) {
+  if ( empty( get_location_data() ) ) {
     return [];
   }
 
@@ -49,7 +58,7 @@ function maybe_modify_search_query( $query ) {
     return;
   }
 
-  if ( ! isset( \THEME_SETTINGS['search_locations'][ $_GET['airloc'] ] ) ) {
+  if ( ! isset( get_location_data()[ $_GET['airloc'] ] ) ) {
     return;
   }
 
@@ -59,19 +68,19 @@ function maybe_modify_search_query( $query ) {
 } // end maybe_modify_search_query
 
 function do_search_query( $params ) {
-  if ( ! defined( 'THEME_SETTINGS' ) ) {
+  if ( empty( get_location_data() ) ) {
     return [];
   }
 
   $search_location = $params['location'];
 
-  $search_locations = THEME_SETTINGS['search_locations'];
+  $search_locations = get_location_data();
   if ( ! array_key_exists( $search_location, $search_locations ) ) {
     return;
   }
 
   // Get custom query args based on search locaiton
-  $args = wp_parse_args( $search_locations[ $search_location ]['query_args'], [
+  $args = wp_parse_args( isset( $search_locations[ $search_location ]['query_args'] ) ? $search_locations[ $search_location ]['query_args'] : [], [
     's' => $params['search'],
     'paged' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
     'fields' => 'ids',
