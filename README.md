@@ -2,7 +2,9 @@
 
 ## Registering search locations
 
-In order to use air-search you need to register search locations in `functions.php`.
+In order to use air-search you need to register search locations.
+
+If you are using Air-light starter theme you can register your locations in your theme_settings in functions.php like this:
 
 ```php
   'search_locations' => [
@@ -28,6 +30,34 @@ In order to use air-search you need to register search locations in `functions.p
     ],
   ],
 ```
+
+If you are not using Air-Light you need to register your search locations with `add_filters( 'air_search_location_data', $location )` filter, where `$location` is your search locations. Like this:
+
+```php
+  add_filters( 'air_search_location_data', [
+    'general' => [
+      'query_args' => [
+        'posts_per_page' => '7',
+      ],
+      'post_types' => [
+        'container-for-post-type-1'          => 'post_type1',
+        'multiple-post-types' => [ 'post_type2', 'post_type3' ],
+      ],
+      'field_mappings' => [
+        'tax_key' => [
+          'type'  => 'tax',
+          'taxonomy' => 'your_taxonomy',
+          'field'  => 'slug',
+        ],
+        'meta_key' => [
+          'type'  => 'meta',
+          'key' => 'your_meta_field',
+        ],
+      ],
+    ],
+  ] )
+```
+
 
 Here we register search location called `general`.
 Each search location takes arrays of `query_args`, `post_types` and `field_mappings`.
