@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 const PLUGIN_VERSION = '1.0.0';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
+include plugin_dir_path( __FILE__ ) . '/helpers.php';
 
 // Enqueue javascript
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts' );
@@ -32,6 +33,7 @@ function enqueue_scripts() {
     'fallback_id' => apply_filters( 'air_search_fallback_id', 'air-search-fallback' ),
     'result_text_id' => apply_filters( 'air_search_result_text_id', 'air-search-result-text' ),
     'typing_time' => apply_filters( 'air_search_type_time', 250 ),
+    'result_locations' => get_result_locations(),
   ] );
 } // end enqueue_scripts
 

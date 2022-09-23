@@ -2,15 +2,6 @@
 
 namespace Air_Search;
 
-function get_location_data() {
-  $location = [];
-  if ( defined( 'THEME_SETTINGS' ) ) {
-    $location = THEME_SETTINGS['search_locations'];
-  }
-
-  return apply_filters( 'air_search_location_data', $location );
-} // end get_location_data
-
 function search_query( $params ) {
   if ( empty( get_location_data() ) ) {
     return [];
@@ -121,6 +112,7 @@ function do_search_query( $params ) {
   $items = [];
   $total_items = [];
   $max_pages = 0;
+  $items_count = 0;
   foreach ( $search_locations[ $search_location ]['post_types'] as $target => $post_type ) {
     $args['post_type'] = $post_type;
     $args = apply_filters( 'air_search_query_args', $args, $post_type, $search_location );
@@ -145,12 +137,14 @@ function do_search_query( $params ) {
     $total_items[] = [
       'post_type' => $post_type,
       'target'    => $target,
-      'count'     => count( $search_query->posts ),
+      'count'     => $search_query->found_posts,
     ];
 
     if ( $max_pages < $search_query->max_num_pages ) {
       $max_pages = $search_query->max_num_pages;
     }
+
+    $items_count = $items_count + $search_query->found_posts;
 
     foreach ( $search_query->posts as $id ) {
       $items[] = apply_filters( 'air_search_item_data', [
@@ -162,13 +156,13 @@ function do_search_query( $params ) {
     }
   }
 
-  $default_result_text = 'Hakusanalle "' . $params['search'] . '" löytyi ' . $search_query->found_posts . ' tulosta';
+  $default_result_text = 'Hakusanalle "' . $params['search'] . '" löytyi ' . $items_count . ' tulosta';
 
   $output = [
     'search_text'        => $params['search'],
-    'search_result_text' => apply_filters( 'air_search_result_text', $default_result_text, $params['search'], $search_query->found_posts ),
+    'search_result_text' => apply_filters( 'air_search_result_text', $default_result_text, $params['search'], $total_items ),
     'current_page'       => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
-    'found_posts'        => $search_query->found_posts,
+    'found_posts'        => $items_count,
     'max_pages'          => $max_pages,
     'total_items'        => apply_filters( 'air_search_query_total_items', $total_items ),
     'items'              => apply_filters( 'air_search_query_items', $items ),
