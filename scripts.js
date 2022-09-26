@@ -50,10 +50,10 @@ if (searchForm) {
     const searchField = searchForm.querySelector('input[name="s"]');
     let typingTimer;
     searchField.addEventListener('input', () => {
-      clearTimeout(typingTimer);
-      // if (searchField.value) {
-      typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
-      // }
+      if (searchField.value.length > 2 || searchField.value.length === 0) {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+      }
     });
   }
 }
@@ -136,7 +136,7 @@ function updateItemCounts(counts) {
   }
 
   counts.forEach((count) => {
-    let countElement = document.querySelector('button[aria-controls="air-search-product"] #count');
+    let countElement = document.querySelector(`button[aria-controls="${count.target}"] #count`);
     if (!countElement) {
       countElement = document.querySelector(`#${count.target} #count`);
     }
