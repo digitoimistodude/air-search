@@ -5,55 +5,57 @@
 
 let latestSearchText;
 const searchForm = document.querySelector(`#${air_search_settings.search_form_id}`);
-searchForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const searchText = event.target.querySelector('input[name="s"]').value;
-  latestSearchText = searchText;
-  const { location } = event.target.dataset;
-  let args = '?';
-  event.target.querySelectorAll('select, input[type="checkbox"]:checked, input[type="radio"]:checked').forEach((select) => {
-    if (select.value) {
-      args += `${select.name}=${select.value}&`;
+if (searchForm) {
+  searchForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const searchText = event.target.querySelector('input[name="s"]').value;
+    latestSearchText = searchText;
+    const { location } = event.target.dataset;
+    let args = '?';
+    event.target.querySelectorAll('select, input[type="checkbox"]:checked, input[type="radio"]:checked').forEach((select) => {
+      if (select.value) {
+        args += `${select.name}=${select.value}&`;
+      }
+    });
+
+    const fallbackResults = document.querySelector(`#${air_search_settings.fallback_id}`);
+    if (fallbackResults) {
+      fallbackResults.style.display = 'none';
+    }
+
+    clearPagination();
+    if (searchText && location) {
+      callApi(searchText, location, args);
+    } else {
+      showDiv('start');
+      clearItems();
+      clearItemCounts();
     }
   });
 
-  const fallbackResults = document.querySelector(`#${air_search_settings.fallback_id}`);
-  if (fallbackResults) {
-    fallbackResults.style.display = 'none';
-  }
-
-  clearPagination();
-  if (searchText && location) {
-    callApi(searchText, location, args);
-  } else {
-    showDiv('start');
-    clearItems();
-    clearItemCounts();
-  }
-});
-
-// Clear the textfield when pressing the escape key
-searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
-  if (event.keyCode === 27) {
-    event.target.value = '';
-    showDiv('start');
-    clearItems();
-    clearItemCounts();
-    clearPagination();
-  }
-});
-
-// Automatic form submitting when user stops typing for a specified time
-const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
-if (Number.isInteger(doneTypingInterval)) {
-  const searchField = searchForm.querySelector('input[name="s"]');
-  let typingTimer;
-  searchField.addEventListener('input', () => {
-    clearTimeout(typingTimer);
-    // if (searchField.value) {
-    typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
-    // }
+  // Clear the textfield when pressing the escape key
+  searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
+    if (event.keyCode === 27) {
+      event.target.value = '';
+      showDiv('start');
+      clearItems();
+      clearItemCounts();
+      clearPagination();
+    }
   });
+
+  // Automatic form submitting when user stops typing for a specified time
+  const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
+  if (Number.isInteger(doneTypingInterval)) {
+    const searchField = searchForm.querySelector('input[name="s"]');
+    let typingTimer;
+    searchField.addEventListener('input', () => {
+      clearTimeout(typingTimer);
+      // if (searchField.value) {
+      typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+      // }
+    });
+  }
 }
 
 function formSubmitEvent() {
