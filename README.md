@@ -1,6 +1,10 @@
-# air-search
+## Air-search - A missing real time search for WordPress
 
-## Registering search locations
+<!--[![GitHub release](https://img.shields.io/github/tag/digitoimistodude/air-search.svg?style=flat-square)](https://github.com/digitoimistodude/air-search/releases)-->
+
+Air-search is a developer-friendly real time search powered by WordPress (+ preferably [Relevanssi Premium](https://github.com/msaari/relevanssi)) + Vanilla JS.
+
+### Registering search locations
 
 In order to use air-search you need to register search locations.
 
