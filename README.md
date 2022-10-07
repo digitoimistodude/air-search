@@ -102,6 +102,8 @@ All of the content should be wrapped in a div with id of `air-search-container`(
 
 You will have to add `data-air-search-state="start"` to your template or set a specific styles for when it doesn't exist, becouse JS will only add it after its first action.
 
+Showing of the bigger elements is controlled with this data attribute. Smaller elements get attribute `hidden="true"`, this should be used to controll their visibility in styles.
+
 ```html
   <div aria-live="polite" id="air-search-container">
 ```
