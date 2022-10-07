@@ -93,12 +93,19 @@ Add your search location to the form element as `data-location` and id as `air-s
 * Make sure your inputs/selects names are same as in `field_mappings`
   * Supported inputs are radio and checkbox
 
-### Search results
+### Search content
 
-All of the results should be wrapped in a div with id of `air-search-results`(can be changed with hooks). This is used to hide search result containers, clearing search result containers and result counts.
+All of the content should be wrapped in a div with id of `air-search-container`(can be changed with hooks), with aria-live set. Aria-live allows better experience for screen reader users. This element gets attribute `aria-busy="true"` when loading is happening and `aria-busy="false"` when content is ready. This allows us to display a loading screen during load for seeing users and screen readers can act according to `aria-live`. Data attribute `data-air-search-state` will allow you to hide and show correct content for each situation. Its values are:
+* `start` - shown when nothing has been searched for.
+* `no-results`- shown when no results are found.
+* `results` - shown when results are found.
+
+You will have to add `data-air-search-state="start"` to your template or set a specific styles for when it doesn't exist, becouse JS will only add it after its first action.
+
+Showing of the bigger elements is controlled with this data attribute. Smaller elements get attribute `hidden="true"`, this should be used to controll their visibility in styles.
 
 ```html
-  <div id="air-search-results" style="display:none">
+  <div aria-live="polite" id="air-search-container">
 ```
 
 For each post type you need to make the following html.
@@ -162,35 +169,26 @@ Pagination will be replaced with every search so a div with id of `air-search-pa
 
 ### Misc elements
 
-Extra optional elements can be added to the template.
+Extra optional elements can be added inside of the content wrapper.
 
 Search info text. Id needs to be set to `air-search-result-text`(id and the result text can be modified with hooks)
 ```html
-  <h2 id="air-search-result-text" style="display:none"></h2>
+  <h2 id="air-search-result-text"></h2>
 ```
 
 Default state of the search. Shown at the start and when input field is empty
 ```html
-  <div id="air-search-start" <?php if ( isset( $search_query_results ) ) echo 'style="display:none"' ?>>
+  <div id="air-search-start">
     // Your content here
-  </div>
-```
-
-Shown when search in progress.
-```html
-  <div class="air-search-loading" id="air-search-loading" style="display:none">
-    // Your loading screen here
   </div>
 ```
 
 Shown when no results are found.
 ```html
-  <div class="air-search-no-results" id="air-search-no-results" <?php if ( ! isset( $search_query_results ) || ! empty( $search_query_results['items'] ) ) echo 'style="display:none"' ?>>
+  <div class="air-search-no-results" id="air-search-no-results">
     // Your content here
   </div>
 ```
-
-Alot of the elements need to be hidden by default, so they dont flicker when loading the screen.
 
 ## Hooks
 
