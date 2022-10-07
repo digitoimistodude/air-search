@@ -20,10 +20,11 @@ if (searchForm) {
 
     const fallbackResults = document.querySelector(`#${air_search_settings.fallback_id}`);
     if (fallbackResults) {
-      fallbackResults.style.display = 'none';
+      fallbackResults.setAttribute('hidden', true);
     }
 
     clearPagination();
+    showDiv('loading');
     if (searchText && location) {
       callApi(searchText, location, args);
     } else {
@@ -64,7 +65,6 @@ function formSubmitEvent() {
 }
 
 async function callApi(searchText, location, args) {
-  showDiv('loading');
   const apiBase = 'wp-json/air-search/v1/';
   const res = await fetch(`${apiBase + location}/${searchText}${args}`, { method: 'GET' });
 
@@ -103,7 +103,9 @@ function printItems(data, searchText, location, args) {
   updatePagination(data.pagination, searchText, location, args);
   data.items.forEach((item) => {
     const targetParent = document.querySelector(`#${item.target}`);
-    targetParent.style.display = '';
+    const targetButton = document.querySelector(`button[aria-controls="${item.target}"]`);
+    targetParent.removeAttribute('hidden');
+    targetButton.removeAttribute('hidden');
     const targetElement = targetParent.querySelector(`#${air_search_settings.items_container_id}`);
     if (targetElement) {
       targetElement.innerHTML += item.html;
@@ -112,7 +114,7 @@ function printItems(data, searchText, location, args) {
 }
 
 function clearItems() {
-  const itemsElement = document.querySelector(`#${air_search_settings.results_container_id}`);
+  const itemsElement = document.querySelector(`#${air_search_settings.search_container_id}`);
 
   itemsElement.querySelectorAll(`#${air_search_settings.items_container_id}`).forEach((itemElement) => {
     if (itemElement.hasChildNodes()) {
@@ -122,10 +124,9 @@ function clearItems() {
 }
 
 function clearItemCounts() {
-  const countElements = document.querySelectorAll(`#${air_search_settings.results_container_id} #count, button[aria-controls="air-search-product"] #count`);
+  const countElements = document.querySelectorAll(`#${air_search_settings.search_container_id} #count`);
   countElements.forEach((element) => {
     element.innerHTML = '';
-    element.style.display = 'none';
   });
 }
 
@@ -143,50 +144,33 @@ function updateItemCounts(counts) {
 
     if (countElement) {
       countElement.innerHTML = count.count;
-      countElement.style.display = '';
     }
   });
 }
 
 function showDiv(divToShow) {
-  const loading = document.querySelector('#air-search-loading');
-  const noResults = document.querySelector('#air-search-no-results');
-  const results = document.querySelector('#air-search-results');
-  const start = document.querySelector('#air-search-start');
-  const searchTextElement = document.querySelector(`#${air_search_settings.result_text_id}`);
+  const results = document.querySelector('#air-search-container');
 
-  if (loading) {
-    loading.style.display = 'none';
-  }
-
-  if (noResults) {
-    noResults.style.display = 'none';
-  }
-
-  if (results) {
-    results.style.display = 'none';
-  }
-
-  if (start) {
-    start.style.display = 'none';
-  }
-
-  if (document.querySelector(`#air-search-${divToShow}`)) {
-    document.querySelector(`#air-search-${divToShow}`).style.display = '';
-
-    if (searchTextElement && (divToShow === 'start' || divToShow === 'loading')) {
-      searchTextElement.style.display = 'none';
-    }
+  if (divToShow === 'loading') {
+    results.setAttribute('aria-busy', true);
+  } else {
+    results.setAttribute('aria-busy', false);
+    results.dataset.airSearchState = divToShow;
   }
 }
 
 function hideResultContainers() {
-  const resultsWrapper = document.querySelector(`#${air_search_settings.results_container_id}`);
+  const resultsWrapper = document.querySelector(`#${air_search_settings.search_container_id}`);
 
   air_search_settings.result_locations.forEach((location) => {
     const resultLocation = resultsWrapper.querySelector(`#${location}`);
+    const resultTabButton = resultsWrapper.querySelector(`[aria-controls="${location}"]`);
     if (resultLocation) {
-      resultLocation.style.display = 'none';
+      resultLocation.setAttribute('hidden', true);
+    }
+
+    if (resultTabButton) {
+      resultTabButton.setAttribute('hidden', true);
     }
   });
 }
@@ -195,7 +179,7 @@ function updatePagination(newPagination, searchText, location, args) {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
   args = args.replace(/&?air-page=[0-9]+&?/i, '');
   if (pagDiv) {
-    pagDiv.style.display = '';
+    pagDiv.removeAttribute('hidden');
     pagDiv.innerHTML = newPagination;
   }
 
@@ -215,7 +199,7 @@ function updatePagination(newPagination, searchText, location, args) {
 
 function clearPagination() {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
-  pagDiv.style.display = 'none';
+  pagDiv.setAttribute('hidden', true);
   pagDiv.innerHTML = '';
 }
 
@@ -223,6 +207,5 @@ function updateResultsText(text) {
   const searchTextElement = document.querySelector(`#${air_search_settings.result_text_id}`);
   if (searchTextElement && text) {
     searchTextElement.innerHTML = text;
-    searchTextElement.style.display = '';
   }
 }
