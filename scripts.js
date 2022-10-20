@@ -101,11 +101,15 @@ function printItems(data, searchText, location, args) {
 
   updateItemCounts(data.total_items);
   updatePagination(data.pagination, searchText, location, args);
-  data.items.forEach((item) => {
+  data.items.forEach((item, index) => {
     const targetParent = document.querySelector(`#${item.target}`);
     const targetButton = document.querySelector(`button[aria-controls="${item.target}"]`);
-    targetParent.removeAttribute('hidden');
+
     targetButton.removeAttribute('hidden');
+    if (index === 0) {
+      targetParent.removeAttribute('hidden');
+    }
+
     const targetElement = targetParent.querySelector(`#${air_search_settings.items_container_id}`);
     if (targetElement) {
       targetElement.innerHTML += item.html;
