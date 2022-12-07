@@ -212,3 +212,4 @@ Shown when no results are found.
 * `add_filters( 'air_search_result_text', $default_result_text, $params['search'], $search_query->found_posts )` Filters the search result text that gets placed in element with id of `air-search-result-text`.
 * `add_filters( 'air_search_query_total_items', $total_items )` Filters the total number of items.
 * `add_filters( 'air_search_query_result', $output )` Filters the output of the search query.
+* `add_filter( 'air_search_min_length', $length )` Allows user to change needed length of the search input before automatic search can start.

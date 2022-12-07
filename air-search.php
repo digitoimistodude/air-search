@@ -7,7 +7,7 @@
  * Author URI: https://dude.fi
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  * @package air-search
  */
@@ -16,7 +16,7 @@ namespace Air_Search;
 
 defined( 'ABSPATH' ) || exit;
 
-const PLUGIN_VERSION = '1.0.0';
+const PLUGIN_VERSION = '1.0.1';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
 include plugin_dir_path( __FILE__ ) . '/helpers.php';
@@ -34,6 +34,7 @@ function enqueue_scripts() {
     'result_text_id' => apply_filters( 'air_search_result_text_id', 'air-search-result-text' ),
     'typing_time' => apply_filters( 'air_search_type_time', 250 ),
     'result_locations' => get_result_locations(),
+    'min_search_length' => apply_filters( 'air_search_min_length', 3 ),
   ] );
 } // end enqueue_scripts
 

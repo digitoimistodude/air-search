@@ -50,8 +50,12 @@ if (searchForm) {
   if (Number.isInteger(doneTypingInterval)) {
     const searchField = searchForm.querySelector('input[name="s"]');
     let typingTimer;
+    let minSearchLength = Math.abs(air_search_settings.min_search_length);
+    if (!minSearchLength) {
+      minSearchLength = 3;
+    }
     searchField.addEventListener('input', () => {
-      if (searchField.value.length > 2 || searchField.value.length === 0) {
+      if (searchField.value.length >= minSearchLength || searchField.value.length === 0) {
         clearTimeout(typingTimer);
         typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
       }
