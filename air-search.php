@@ -7,7 +7,7 @@
  * Author URI: https://dude.fi
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.0.1
+ * Version: 1.0.2
  *
  * @package air-search
  */
@@ -16,7 +16,7 @@ namespace Air_Search;
 
 defined( 'ABSPATH' ) || exit;
 
-const PLUGIN_VERSION = '1.0.1';
+const PLUGIN_VERSION = '1.0.2';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
 include plugin_dir_path( __FILE__ ) . '/helpers.php';
@@ -35,6 +35,8 @@ function enqueue_scripts() {
     'typing_time' => apply_filters( 'air_search_type_time', 250 ),
     'result_locations' => get_result_locations(),
     'min_search_length' => apply_filters( 'air_search_min_length', 3 ),
+    'rest_api_base'     => rest_url(),
+    'disable_checkbox_auto_search' => apply_filters( 'air_search_disable_checkbox_auto_search', false ),
   ] );
 } // end enqueue_scripts
 
@@ -42,6 +44,12 @@ function enqueue_scripts() {
 add_action( 'rest_api_init', __NAMESPACE__ . '\init_rest_route' );
 function init_rest_route() {
   register_rest_route( 'air-search/v1', '/(?P<location>[a-zA-Z0-9-]+)/(?P<search>[a-zA-Z0-9-\p{L}\%]+)?', [
+    'permission_callback' => '__return_true',
+    'methods' => 'GET',
+    'callback' => __NAMESPACE__ . '\search_query',
+  ] );
+
+  register_rest_route( 'air-search/v1', '/(?P<location>[a-zA-Z0-9-]+)', [
     'permission_callback' => '__return_true',
     'methods' => 'GET',
     'callback' => __NAMESPACE__ . '\search_query',

@@ -4,19 +4,40 @@
 /* eslint-disable no-use-before-define */
 
 let latestSearchText;
+let latestArgs;
 const searchForm = document.querySelector(`#${air_search_settings.search_form_id}`);
 if (searchForm) {
   searchForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const searchText = event.target.querySelector('input[name="s"]').value;
+    let searchText = '';
+    if (event.target.querySelector('input[name="s"]')) {
+      searchText = event.target.querySelector('input[name="s"]').value;
+    }
     latestSearchText = searchText;
     const { location } = event.target.dataset;
     let args = '?';
+    const checkboxValues = {};
     event.target.querySelectorAll('select, input[type="checkbox"]:checked, input[type="radio"]:checked').forEach((select) => {
       if (select.value) {
-        args += `${select.name}=${select.value}&`;
+        if (select.type === 'checkbox') {
+          if (!checkboxValues[select.name]) {
+            checkboxValues[select.name] = [select.value];
+          } else {
+            checkboxValues[select.name].push(select.value);
+          }
+        } else {
+          args += `${select.name}=${select.value}&`;
+        }
       }
     });
+
+    if (checkboxValues) {
+      Object.keys(checkboxValues).forEach((checkbox) => {
+        args += `${checkbox}=${checkboxValues[checkbox].join(',')}&`;
+      });
+
+      latestArgs = args;
+    }
 
     const fallbackResults = document.querySelector(`#${air_search_settings.fallback_id}`);
     if (fallbackResults) {
@@ -25,7 +46,7 @@ if (searchForm) {
 
     clearPagination();
     showDiv('loading');
-    if (searchText && location) {
+    if (location && (searchText || args !== '?')) {
       callApi(searchText, location, args);
     } else {
       showDiv('start');
@@ -35,31 +56,45 @@ if (searchForm) {
   });
 
   // Clear the textfield when pressing the escape key
-  searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
-    if (event.keyCode === 27) {
-      event.target.value = '';
-      showDiv('start');
-      clearItems();
-      clearItemCounts();
-      clearPagination();
-    }
-  });
-
-  // Automatic form submitting when user stops typing for a specified time
-  const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
-  if (Number.isInteger(doneTypingInterval)) {
-    const searchField = searchForm.querySelector('input[name="s"]');
-    let typingTimer;
-    let minSearchLength = Math.abs(air_search_settings.min_search_length);
-    if (!minSearchLength) {
-      minSearchLength = 3;
-    }
-    searchField.addEventListener('input', () => {
-      if (searchField.value.length >= minSearchLength || searchField.value.length === 0) {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+  if (searchForm.querySelector('input[name="s"]')) {
+    searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
+      if (event.keyCode === 27) {
+        event.target.value = '';
+        showDiv('start');
+        clearItems();
+        clearItemCounts();
+        clearPagination();
       }
     });
+  }
+
+  // Automatic form submitting when user stops typing for a specified time or clicks a checkbox
+  const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
+  if (Number.isInteger(doneTypingInterval)) {
+    let typingTimer;
+    const searchField = searchForm.querySelector('input[name="s"]');
+    if (searchField) {
+      let minSearchLength = Math.abs(air_search_settings.min_search_length);
+      if (!minSearchLength) {
+        minSearchLength = 3;
+      }
+      searchField.addEventListener('input', () => {
+        if (searchField.value.length >= minSearchLength || searchField.value.length === 0) {
+          clearTimeout(typingTimer);
+          typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+        }
+      });
+    }
+
+    if (!air_search_settings.disable_checkbox_auto_search) {
+      const filters = searchForm.querySelectorAll('input[type="checkbox"]');
+      filters.forEach((element) => {
+        element.addEventListener('change', () => {
+          clearTimeout(typingTimer);
+          typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+        });
+      });
+    }
   }
 }
 
@@ -69,12 +104,15 @@ function formSubmitEvent() {
 }
 
 async function callApi(searchText, location, args) {
-  const apiBase = 'wp-json/air-search/v1/';
-  const res = await fetch(`${apiBase + location}/${searchText}${args}`, { method: 'GET' });
+  const apiBase = 'air-search/v1/';
+  const res = await fetch(`${air_search_settings.rest_api_base}${apiBase + location}/${searchText}${args}`, { method: 'GET' });
 
-  window.history.pushState(null, '', `${args}s=${searchText}&airloc=${location}`);
+  let urlArgs = `${args}airloc=${location}`;
+  if (searchText) {
+    urlArgs += `&s=${searchText}`;
+  }
+  window.history.pushState(null, '', urlArgs);
   clearItemCounts();
-
   if (!res.ok) {
     showDiv('no-results');
     clearItems();
@@ -83,7 +121,7 @@ async function callApi(searchText, location, args) {
 
   const outputRaw = await res.json();
   const output = JSON.parse(outputRaw);
-  if (latestSearchText !== output.search_text) {
+  if ((latestSearchText !== output.search_text) || (latestArgs !== output.args)) {
     return;
   }
 
@@ -109,7 +147,10 @@ function printItems(data, searchText, location, args) {
     const targetParent = document.querySelector(`#${item.target}`);
     const targetButton = document.querySelector(`button[aria-controls="${item.target}"]`);
 
-    targetButton.removeAttribute('hidden');
+    if (targetButton) {
+      targetButton.removeAttribute('hidden');
+    }
+
     if (index === 0) {
       targetParent.removeAttribute('hidden');
     }
@@ -170,45 +211,51 @@ function showDiv(divToShow) {
 function hideResultContainers() {
   const resultsWrapper = document.querySelector(`#${air_search_settings.search_container_id}`);
 
-  air_search_settings.result_locations.forEach((location) => {
-    const resultLocation = resultsWrapper.querySelector(`#${location}`);
-    const resultTabButton = resultsWrapper.querySelector(`[aria-controls="${location}"]`);
-    if (resultLocation) {
-      resultLocation.setAttribute('hidden', true);
-    }
+  if (air_search_settings.result_locations) {
+    air_search_settings.result_locations.forEach((location) => {
+      const resultLocation = resultsWrapper.querySelector(`#${location}`);
+      const resultTabButton = resultsWrapper.querySelector(`[aria-controls="${location}"]`);
+      if (resultLocation) {
+        resultLocation.setAttribute('hidden', true);
+      }
 
-    if (resultTabButton) {
-      resultTabButton.setAttribute('hidden', true);
-    }
-  });
+      if (resultTabButton) {
+        resultTabButton.setAttribute('hidden', true);
+      }
+    });
+  }
 }
 
 function updatePagination(newPagination, searchText, location, args) {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
-  args = args.replace(/&?air-page=[0-9]+&?/i, '');
   if (pagDiv) {
-    pagDiv.removeAttribute('hidden');
-    pagDiv.innerHTML = newPagination;
-  }
+    args = args.replace(/&?air-page=[0-9]+&?/i, '');
+    if (pagDiv) {
+      pagDiv.removeAttribute('hidden');
+      pagDiv.innerHTML = newPagination;
+    }
 
-  pagDiv.querySelectorAll('a.page-numbers').forEach((element) => {
-    element.addEventListener('click', (event) => {
-      event.preventDefault();
+    pagDiv.querySelectorAll('a.page-numbers').forEach((element) => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
 
-      const pageNumber = event.target.href.match('air-page=([0-9]+)');
-      if (pageNumber) {
-        args += `air-page=${pageNumber[1]}&`;
-      }
+        const pageNumber = event.target.href.match('air-page=([0-9]+)');
+        if (pageNumber) {
+          args += `air-page=${pageNumber[1]}&`;
+        }
 
-      callApi(searchText, location, args);
+        callApi(searchText, location, args);
+      });
     });
-  });
+  }
 }
 
 function clearPagination() {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
-  pagDiv.setAttribute('hidden', true);
-  pagDiv.innerHTML = '';
+  if (pagDiv) {
+    pagDiv.setAttribute('hidden', true);
+    pagDiv.innerHTML = '';
+  }
 }
 
 function updateResultsText(text) {

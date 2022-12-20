@@ -45,11 +45,11 @@ function maybe_modify_search_query( $query ) {
     return;
   }
 
-  if ( ! isset( $_GET['airloc'] ) ) {
+  if ( ! isset( $_GET['airloc'] ) ) { // phpcs:ignore
     return;
   }
 
-  if ( ! isset( get_location_data()[ $_GET['airloc'] ] ) ) {
+  if ( ! isset( get_location_data()[ $_GET['airloc'] ] ) ) { // phpcs:ignore
     return;
   }
 
@@ -63,6 +63,10 @@ function do_search_query( $params ) {
     return [];
   }
 
+  if ( ! isset( $params['search'] ) ) {
+    $params['search'] = '';
+  }
+
   $search_location = $params['location'];
 
   $search_locations = get_location_data();
@@ -73,40 +77,62 @@ function do_search_query( $params ) {
   // Get custom query args based on search locaiton
   $args = wp_parse_args( isset( $search_locations[ $search_location ]['query_args'] ) ? $search_locations[ $search_location ]['query_args'] : [], [
     's' => $params['search'],
-    'paged' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
+    'paged' => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1, // phpcs:ignore
     'fields' => 'ids',
   ] );
 
   // Handle all possible meta and taxonomy queries
   $meta_query = [];
   $tax_query = [];
+  $arguments = [];
   if ( isset( $search_locations[ $search_location ]['field_mappings'] ) && ! empty( $search_locations[ $search_location ]['field_mappings'] ) ) {
     foreach ( $search_locations[ $search_location ]['field_mappings'] as $field_key => $data ) {
-      if ( ! isset( $_GET[ $field_key ] ) || '' === $_GET[ $field_key ] ) {
+      if ( 'meta_relation' === $field_key || 'tax_relation' === $field_key ) {
+        continue;
+      }
+
+      if ( ! isset( $_GET[ $field_key ] ) || '' === $_GET[ $field_key ] ) { // phpcs:ignore
         continue;
       }
 
       if ( 'meta' === $data['type'] ) {
         $meta_query[] = [
           'key'   => $data['key'],
-          'value' => $_GET[ $field_key ],
+          'value' => $_GET[ $field_key ], // phpcs:ignore
         ];
       } elseif ( 'tax' === $data['type'] ) {
         $tax_query[] = [
           'taxonomy' => $data['taxonomy'],
           'field'     => isset( $data['field'] ) ? $data['field'] : 'term_id',
-          'terms'    => $_GET[ $field_key ],
+          'terms'    => explode( ',', $_GET[ $field_key ] ), // phpcs:ignore
         ];
       }
+
+      $arguments[ $field_key ] = $_GET[ $field_key ]; // phpcs:ignore
+    }
+  }
+
+  $arg_string = '?';
+  if ( ! empty( $arguments ) ) {
+    foreach ( $arguments as $key => $data ) {
+      $arg_string .= "{$key}={$data}&";
     }
   }
 
   if ( ! empty( $meta_query ) ) {
-    $args['meta_query'] = $meta_query;
+    $args['meta_query'] = $meta_query; // phpcs:ignore
   }
 
   if ( ! empty( $tax_query ) ) {
     $args['tax_query'][] = $tax_query;
+  }
+
+  if ( ! empty( $args['tax_query'] ) && 1 < count( $args['tax_query'] ) ) {
+    $args['tax_query']['relation'] = isset( $search_locations[ $search_location ]['field_mappings']['tax_relation'] ) ? $search_locations[ $search_location ]['field_mappings']['tax_relation'] : 'AND';
+  }
+
+  if ( ! empty( $args['meta_query'] ) && 1 < count( $args['meta_query'] ) ) {
+    $args['meta_query']['relation'] = isset( $search_locations[ $search_location ]['field_mappings']['meta_relation'] ) ? $search_locations[ $search_location ]['field_mappings']['meta_relation'] : 'AND';
   }
 
   $items = [];
@@ -161,14 +187,15 @@ function do_search_query( $params ) {
   $output = [
     'search_text'        => $params['search'],
     'search_result_text' => apply_filters( 'air_search_result_text', $default_result_text, $params['search'], $total_items ),
-    'current_page'       => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1,
+    'args'               => '?' === $arg_string ? '' : $arg_string,
+    'current_page'       => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1, // phpcs:ignore
     'found_posts'        => $items_count,
     'max_pages'          => $max_pages,
     'total_items'        => apply_filters( 'air_search_query_total_items', $total_items ),
     'items'              => apply_filters( 'air_search_query_items', $items ),
     'pagination'         => paginate_links( [
       'base'    => '?air-page=%#%',
-      'current' => max( 1, isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1 ),
+      'current' => max( 1, isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1 ), // phpcs:ignore
       'total'   => $max_pages,
     ] ),
   ];

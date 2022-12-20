@@ -21,6 +21,8 @@ If you are using Air-light starter theme you can register your locations in your
         'multiple-post-types' => [ 'post_type2', 'post_type3' ],
       ],
       'field_mappings' => [
+        'tax_relation' => 'OR', // This will be used as the relation argument when using multipe queries of same type. If not set defaults to 'AND'.
+        'meta_relation' => 'OR', // This will be used as the relation argument when using multipe queries of same type. If not set defaults to 'AND'.
         'tax_key' => [
           'type'  => 'tax',
           'taxonomy' => 'your_taxonomy',
@@ -48,6 +50,8 @@ If you are not using Air-Light you need to register your search locations with `
         'multiple-post-types' => [ 'post_type2', 'post_type3' ],
       ],
       'field_mappings' => [
+        'tax_relation' => 'OR', // This will be used as the relation argument when using multipe queries of same type. If not set defaults to 'AND'.
+        'meta_relation' => 'OR', // This will be used as the relation argument when using multipe queries of same type. If not set defaults to 'AND'.
         'tax_key' => [
           'type'  => 'tax',
           'taxonomy' => 'your_taxonomy',
@@ -194,22 +198,23 @@ Shown when no results are found.
 
 ### Element id filters
 
-* `add_filters( 'air_search_form_id', $id )`
-* `add_filters( 'air_search_results_container_id', $id )`
-* `add_filters( 'air_search_items_container_id', $id )`
-* `add_filters( 'air_search_pagination_id', $id )`
-* `add_filters( 'air_search_fallback_id', $id )`
-* `add_filters( 'air_search_result_text_id', $id )`
+* `add_filter( 'air_search_form_id', $id )`
+* `add_filter( 'air_search_results_container_id', $id )`
+* `add_filter( 'air_search_items_container_id', $id )`
+* `add_filter( 'air_search_pagination_id', $id )`
+* `add_filter( 'air_search_fallback_id', $id )`
+* `add_filter( 'air_search_result_text_id', $id )`
 
 ### Other filters
 
-* `add_filters( 'air_search_location_data', $location )` Used to set/edit search location data.
-* `add_filters( 'air_search_type_time', $time_in_ms )` Filter for changing the time untill a search is triggered after user has stopped typing. Set in milliseconds. Default 250.
-* `add_filters( 'air_search_item_template', $template_path, $item_post_type, $id )` Allows modifying of the item template.
-* `add_filters( 'air_search_query_args', $args, $post_type, $search_location )` Allows modifying of the search query. Can be used to modify only a specific post types query.
-* `add_filters( 'air_search_item_data', $item_data, $id )` Filter for modifying each singular item.
-* `add_filters( 'air_search_query_items', $items )` Filters list of items.
-* `add_filters( 'air_search_result_text', $default_result_text, $params['search'], $search_query->found_posts )` Filters the search result text that gets placed in element with id of `air-search-result-text`.
-* `add_filters( 'air_search_query_total_items', $total_items )` Filters the total number of items.
-* `add_filters( 'air_search_query_result', $output )` Filters the output of the search query.
+* `add_filter( 'air_search_location_data', $location )` Used to set/edit search location data.
+* `add_filter( 'air_search_type_time', $time_in_ms )` Filter for changing the time untill a search is triggered after user has stopped typing. Set in milliseconds. Default 250.
+* `add_filter( 'air_search_item_template', $template_path, $item_post_type, $id )` Allows modifying of the item template.
+* `add_filter( 'air_search_query_args', $args, $post_type, $search_location )` Allows modifying of the search query. Can be used to modify only a specific post types query.
+* `add_filter( 'air_search_item_data', $item_data, $id )` Filter for modifying each singular item.
+* `add_filter( 'air_search_query_items', $items )` Filters list of items.
+* `add_filter( 'air_search_result_text', $default_result_text, $params['search'], $search_query->found_posts )` Filters the search result text that gets placed in element with id of `air-search-result-text`.
+* `add_filter( 'air_search_query_total_items', $total_items )` Filters the total number of items.
+* `add_filter( 'air_search_query_result', $output )` Filters the output of the search query.
 * `add_filter( 'air_search_min_length', $length )` Allows user to change needed length of the search input before automatic search can start.
+* `add_filter( 'air_search_disable_checkbox_auto_search', false )` Setting this to true will stop form from automatically submitting after clicking an input with type of checkbox.
