@@ -198,13 +198,16 @@ function updateItemCounts(counts) {
 }
 
 function showDiv(divToShow) {
-  const results = document.querySelector('#air-search-container');
+  const results = document.querySelector(`#${air_search_settings.search_container_id}`);
 
   if (divToShow === 'loading') {
     results.setAttribute('aria-busy', true);
   } else {
     results.setAttribute('aria-busy', false);
     results.dataset.airSearchState = divToShow;
+    if (results.getAttribute('pagination')) {
+      results.removeAttribute('pagination');
+    }
   }
 }
 
@@ -243,6 +246,11 @@ function updatePagination(newPagination, searchText, location, args) {
           args += `air-page=${pageNumber[1]}&`;
         }
 
+        showDiv('loading');
+        const searchContainer = document.querySelector(`#${air_search_settings.search_container_id}`);
+        if (searchContainer) {
+          searchContainer.setAttribute('pagination', true);
+        }
         callApi(searchText, location, args);
       });
     });

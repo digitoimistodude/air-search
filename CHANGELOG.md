@@ -1,3 +1,8 @@
+### 1.0.4: 2022-12-29
+## Fixed
+* Bugs related to pagination
+* A query selector not using a variable that can be changed with hooks
+
 ### 1.0.3: 2022-12-29
 ## Added
 * air_search_result_text filter now gets total number of posts as a variable.
