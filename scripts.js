@@ -229,11 +229,10 @@ function hideResultContainers() {
 function updatePagination(newPagination, searchText, location, args) {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
   if (pagDiv) {
-    args = args.replace(/&?air-page=[0-9]+&?/i, '');
-    if (pagDiv) {
-      pagDiv.removeAttribute('hidden');
-      pagDiv.innerHTML = newPagination;
-    }
+    args = args.replace(/air-page=[0-9]+&?/i, '');
+
+    pagDiv.removeAttribute('hidden');
+    pagDiv.innerHTML = newPagination;
 
     pagDiv.querySelectorAll('a.page-numbers').forEach((element) => {
       element.addEventListener('click', (event) => {
