@@ -1,3 +1,7 @@
+### 1.0.3: 2022-12-29
+## Added
+* air_search_result_text filter now gets total number of posts as a variable.
+
 ### 1.0.2: 2022-12-20
 ## Added
 * Automatically search after clicking an input with type checkbox. To make searches with no text input and no search button possible.

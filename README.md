@@ -213,7 +213,7 @@ Shown when no results are found.
 * `add_filter( 'air_search_query_args', $args, $post_type, $search_location )` Allows modifying of the search query. Can be used to modify only a specific post types query.
 * `add_filter( 'air_search_item_data', $item_data, $id )` Filter for modifying each singular item.
 * `add_filter( 'air_search_query_items', $items )` Filters list of items.
-* `add_filter( 'air_search_result_text', $default_result_text, $params['search'], $search_query->found_posts )` Filters the search result text that gets placed in element with id of `air-search-result-text`.
+* `add_filter( 'air_search_result_text', $default_result_text, $search_text, $total_items_per_post_type, $total_items )` Filters the search result text that gets placed in element with id of `air-search-result-text`.
 * `add_filter( 'air_search_query_total_items', $total_items )` Filters the total number of items.
 * `add_filter( 'air_search_query_result', $output )` Filters the output of the search query.
 * `add_filter( 'air_search_min_length', $length )` Allows user to change needed length of the search input before automatic search can start.
