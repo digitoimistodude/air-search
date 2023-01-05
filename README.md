@@ -75,7 +75,7 @@ Only `post_types` is required.
 
 `post_types` is where you specify what post types go in what containers. In the example above, `post_type1` will be placed in a element with id of `container-for-post-type-1`. You can also set multiple post types to the same element.
 
-`field_mappings` allows you to add taxonomy and meta queries to your search.
+`field_mappings` allows you to add taxonomy and meta queries to your search. **Fields need to be listed in the same order as they are in the search form. If the order of field mappings and fields in the form don't match, search will get stuck in loading state.**
   * Key of the mapping array has to be used in your input/select field as the name.
   * `type` field takes either "meta" or "tax" depending on which query you want to use.
     * For meta queries you only need to add your meta field as `key`.
@@ -218,3 +218,4 @@ Shown when no results are found.
 * `add_filter( 'air_search_query_result', $output )` Filters the output of the search query.
 * `add_filter( 'air_search_min_length', $length )` Allows user to change needed length of the search input before automatic search can start.
 * `add_filter( 'air_search_disable_checkbox_auto_search', false )` Setting this to true will stop form from automatically submitting after clicking an input with type of checkbox.
+* `add_filter( 'air_search_disable_select_auto_search', false )` Setting this to true will stop form from automatically submitting after changing a select field.

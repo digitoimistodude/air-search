@@ -1,3 +1,11 @@
+### 1.0.5: 2023-01-05
+## Fixed
+* Search getting stuck if using checkboxes and select fields at the same time.
+
+## Added
+* Automatic searching after changing the value of a select field.
+* Hook for disabling automatic searching after changing a select field.
+
 ### 1.0.4: 2022-12-29
 ## Fixed
 * Bugs related to pagination

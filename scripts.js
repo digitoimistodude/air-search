@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 /* eslint-disable no-param-reassign */
@@ -16,24 +17,24 @@ if (searchForm) {
     latestSearchText = searchText;
     const { location } = event.target.dataset;
     let args = '?';
-    const checkboxValues = {};
+    const argsArray = {};
     event.target.querySelectorAll('select, input[type="checkbox"]:checked, input[type="radio"]:checked').forEach((select) => {
       if (select.value) {
         if (select.type === 'checkbox') {
-          if (!checkboxValues[select.name]) {
-            checkboxValues[select.name] = [select.value];
+          if (!argsArray[select.name]) {
+            argsArray[select.name] = [select.value];
           } else {
-            checkboxValues[select.name].push(select.value);
+            argsArray[select.name].push(select.value);
           }
         } else {
-          args += `${select.name}=${select.value}&`;
+          argsArray[select.name] = [select.value];
         }
       }
     });
 
-    if (checkboxValues) {
-      Object.keys(checkboxValues).forEach((checkbox) => {
-        args += `${checkbox}=${checkboxValues[checkbox].join(',')}&`;
+    if (argsArray) {
+      Object.keys(argsArray).forEach((argItem) => {
+        args += `${argItem}=${argsArray[argItem].join(',')}&`;
       });
 
       latestArgs = args;
@@ -68,7 +69,7 @@ if (searchForm) {
     });
   }
 
-  // Automatic form submitting when user stops typing for a specified time or clicks a checkbox
+  // Automatic form submitting when user stops typing for a specified time, clicks a checkbox or changes a select field
   const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
   if (Number.isInteger(doneTypingInterval)) {
     let typingTimer;
@@ -88,6 +89,16 @@ if (searchForm) {
 
     if (!air_search_settings.disable_checkbox_auto_search) {
       const filters = searchForm.querySelectorAll('input[type="checkbox"]');
+      filters.forEach((element) => {
+        element.addEventListener('change', () => {
+          clearTimeout(typingTimer);
+          typingTimer = setTimeout(formSubmitEvent, doneTypingInterval);
+        });
+      });
+    }
+
+    if (!air_search_settings.disable_select_auto_search) {
+      const filters = searchForm.querySelectorAll('select');
       filters.forEach((element) => {
         element.addEventListener('change', () => {
           clearTimeout(typingTimer);
