@@ -111,7 +111,7 @@ if (searchForm) {
 
 function formSubmitEvent() {
   // form.submit() function doesn't trigger 'submit' event so we have to make one.
-  searchForm.dispatchEvent(new CustomEvent('submit'));
+  searchForm.dispatchEvent(new CustomEvent('submit', { cancelable: true }));
 }
 
 async function callApi(searchText, location, args) {

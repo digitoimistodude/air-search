@@ -1,3 +1,7 @@
+### 1.0.6: 2023-01-11
+## Fixed
+* Firefox reloading the page when submitting the form.
+
 ### 1.0.5: 2023-01-05
 ## Fixed
 * Search getting stuck if using checkboxes and select fields at the same time.
