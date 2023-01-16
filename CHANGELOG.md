@@ -1,3 +1,7 @@
+### 1.0.7: 2023-01-16
+## Fixed
+* Handling of currently selected non text field inputs.
+
 ### 1.0.6: 2023-01-11
 ## Fixed
 * Firefox reloading the page when submitting the form.

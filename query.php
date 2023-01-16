@@ -187,7 +187,7 @@ function do_search_query( $params ) {
   $output = [
     'search_text'        => $params['search'],
     'search_result_text' => apply_filters( 'air_search_result_text', $default_result_text, $params['search'], $total_items, $items_count ),
-    'args'               => '?' === $arg_string ? '' : $arg_string,
+    'args'               => '?' === $arg_string ? '?' : $arg_string,
     'current_page'       => isset( $_GET['air-page'] ) ? $_GET['air-page'] : 1, // phpcs:ignore
     'found_posts'        => $items_count,
     'max_pages'          => $max_pages,
