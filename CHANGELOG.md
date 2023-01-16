@@ -1,3 +1,7 @@
+### 1.0.8: 2023-01-16
+## Fixed
+* Set first tab button to active when doing a new search.
+
 ### 1.0.7: 2023-01-16
 ## Fixed
 * Handling of currently selected non text field inputs.

@@ -157,13 +157,13 @@ function printItems(data, searchText, location, args) {
   data.items.forEach((item, index) => {
     const targetParent = document.querySelector(`#${item.target}`);
     const targetButton = document.querySelector(`button[aria-controls="${item.target}"]`);
-
     if (targetButton) {
       targetButton.removeAttribute('hidden');
     }
 
     if (index === 0) {
       targetParent.removeAttribute('hidden');
+      targetButton.setAttribute('aria-selected', true);
     }
 
     const targetElement = targetParent.querySelector(`#${air_search_settings.items_container_id}`);
@@ -235,6 +235,7 @@ function hideResultContainers() {
 
       if (resultTabButton) {
         resultTabButton.setAttribute('hidden', true);
+        resultTabButton.setAttribute('aria-selected', false);
       }
     });
   }
