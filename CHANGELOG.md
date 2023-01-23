@@ -1,3 +1,7 @@
+### 1.0.9: 2023-01-23
+## Fixed
+* Trying to set attribute to a element that might not exist.
+
 ### 1.0.8: 2023-01-16
 ## Fixed
 * Set first tab button to active when doing a new search.

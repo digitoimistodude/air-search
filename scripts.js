@@ -163,7 +163,9 @@ function printItems(data, searchText, location, args) {
 
     if (index === 0) {
       targetParent.removeAttribute('hidden');
-      targetButton.setAttribute('aria-selected', true);
+      if (targetButon) {
+        targetButton.setAttribute('aria-selected', true);
+      }
     }
 
     const targetElement = targetParent.querySelector(`#${air_search_settings.items_container_id}`);
