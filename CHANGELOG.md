@@ -1,3 +1,7 @@
+### 1.0.10: 2023-01-23
+## Fixed
+* Typo in if check.
+
 ### 1.0.9: 2023-01-23
 ## Fixed
 * Trying to set attribute to a element that might not exist.

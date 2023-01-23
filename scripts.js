@@ -163,7 +163,7 @@ function printItems(data, searchText, location, args) {
 
     if (index === 0) {
       targetParent.removeAttribute('hidden');
-      if (targetButon) {
+      if (targetButton) {
         targetButton.setAttribute('aria-selected', true);
       }
     }
