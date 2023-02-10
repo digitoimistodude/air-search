@@ -172,6 +172,19 @@ function do_search_query( $params ) {
 
     $items_count = $items_count + $search_query->found_posts;
 
+    // Allows for large modifications to the way results are normally listed
+    $pre_items = apply_filters( 'air_search_pre_items', null, $search_query->posts, $post_type, $search_location );
+    if ( ! empty( $pre_items ) ) {
+      $items[] = [
+        'id'        => 0,
+        'post_type' => $post_type,
+        'target'    => $target,
+        'html'      => $pre_items,
+      ];
+
+      continue;
+    }
+
     foreach ( $search_query->posts as $id ) {
       $items[] = apply_filters( 'air_search_item_data', [
         'id'        => $id,

@@ -1,3 +1,7 @@
+### 1.0.11: 2023-02-10
+## Added
+* air_search_pre_items filter that can be used to completely change the way items are listed.
+
 ### 1.0.10: 2023-01-23
 ## Fixed
 * Typo in if check.
