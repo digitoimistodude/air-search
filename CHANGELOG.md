@@ -1,6 +1,6 @@
 ### 1.0.13: 2023-02-13
 ## Changed
-* air_search_search_on_empty changed to a setting in search locations registration to allow different settings for each search location.
+* air_search_search_on_empty filter changed to a setting in search locations registration to allow different settings for each search location.
 
 ### 1.0.12: 2023-02-13
 ## Added
