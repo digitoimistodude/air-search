@@ -1,3 +1,10 @@
+### 1.0.12: 2023-02-13
+## Added
+* air_search_search_on_empty filter that can be used to enable searching even when no input is given.
+
+## Fixed
+* Clear results text when no results are found.
+
 ### 1.0.11: 2023-02-10
 ## Added
 * air_search_pre_items filter that can be used to completely change the way items are listed.

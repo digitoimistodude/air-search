@@ -7,7 +7,7 @@
  * Author URI: https://dude.fi
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.0.11
+ * Version: 1.0.12
  *
  * @package air-search
  */
@@ -16,7 +16,7 @@ namespace Air_Search;
 
 defined( 'ABSPATH' ) || exit;
 
-const PLUGIN_VERSION = '1.0.11';
+const PLUGIN_VERSION = '1.0.12';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
 include plugin_dir_path( __FILE__ ) . '/helpers.php';
@@ -38,6 +38,7 @@ function enqueue_scripts() {
     'rest_api_base'     => rest_url(),
     'disable_checkbox_auto_search' => apply_filters( 'air_search_disable_checkbox_auto_search', false ),
     'disable_select_auto_search' => apply_filters( 'air_search_disable_select_auto_search', false ),
+    'search_on_empty' => apply_filters( 'air_search_search_on_empty', false ),
   ] );
 } // end enqueue_scripts
 

@@ -47,12 +47,13 @@ if (searchForm) {
 
     clearPagination();
     showDiv('loading');
-    if (location && (searchText || args !== '?')) {
+    if (location && ((searchText || args !== '?') || `${air_search_settings.search_on_empty}`)) {
       callApi(searchText, location, args);
     } else {
       showDiv('start');
       clearItems();
       clearItemCounts();
+      updateResultsText('');
     }
   });
 
