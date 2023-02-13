@@ -45,9 +45,14 @@ if (searchForm) {
       fallbackResults.setAttribute('hidden', true);
     }
 
+    let searchOnEmpty = JSON.parse(`${air_search_settings.search_on_empty}`)[location];
+    if (searchOnEmpty !== true && searchOnEmpty !== false) {
+      searchOnEmpty = false;
+    }
+
     clearPagination();
     showDiv('loading');
-    if (location && ((searchText || args !== '?') || `${air_search_settings.search_on_empty}`)) {
+    if (location && ((searchText || args !== '?') || searchOnEmpty)) {
       callApi(searchText, location, args);
     } else {
       showDiv('start');
@@ -284,5 +289,7 @@ function updateResultsText(text) {
   const searchTextElement = document.querySelector(`#${air_search_settings.result_text_id}`);
   if (searchTextElement && text) {
     searchTextElement.innerHTML = text;
+  } else if (searchTextElement) {
+    searchTextElement.innerHTML = '';
   }
 }

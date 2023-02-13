@@ -42,6 +42,7 @@ If you are not using Air-Light you need to register your search locations with `
 ```php
   add_filters( 'air_search_location_data', [
     'general' => [
+      'search_on_empty' => true, // Enables searching on empty fields, disables start search state. Accepts true as a boolean or string.
       'query_args' => [
         'posts_per_page' => '7',
       ],
@@ -220,4 +221,3 @@ Shown when no results are found.
 * `add_filter( 'air_search_disable_checkbox_auto_search', false )` Setting this to true will stop form from automatically submitting after clicking an input with type of checkbox.
 * `add_filter( 'air_search_disable_select_auto_search', false )` Setting this to true will stop form from automatically submitting after changing a select field.
 * `add_filter( 'air_search_pre_items', null, $post_ids, $post_type, $search_location )` This can be used to completely change the way results are listed. Filter should return html as a string. Instead of items containing all the search results and their datas, this one "item" will replace all of them. Items will need to be handled and listed in the filters html, this allows you to for example group results in groups based on post taxonomy.
-* `add_filter( 'air_search_search_on_empty', false )` Can be set to true to enable searching even when no input is given, normally this would set search state to start. If set to true will disable start state and instead do search with default arguments. 

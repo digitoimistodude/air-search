@@ -27,3 +27,22 @@ function get_result_locations() {
 
   return $result_locations;
 } // end get_result_locations
+
+function get_location_search_on_empty_setting() {
+  $locations = get_location_data();
+  if ( empty( $locations ) ) {
+    return false;
+  }
+
+  $settings = [];
+  foreach ( $locations as $location => $values ) {
+    $settings[ $location ] = false;
+    if ( isset( $values['search_on_empty'] ) ) {
+      if ( true === $values['search_on_empty'] || 'true' === $values['search_on_empty'] ) {
+        $settings[ $location ] = true;
+      }
+    }
+  }
+
+  return $settings;
+}
