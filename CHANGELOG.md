@@ -1,3 +1,7 @@
+### 1.0.17: 2023-02-15
+## Fixed
+* Set search text in url with the same key as text field name is.
+
 ### 1.0.16: 2023-02-15
 ## Fixed
 * Search on empty setting.

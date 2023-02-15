@@ -57,7 +57,7 @@ if (searchForm) {
     clearPagination();
     showDiv('loading');
     if (location && ((searchText || args !== '?') || searchOnEmpty)) {
-      callApi(searchText, location, args);
+      callApi(searchText, location, args, searchField.name);
     } else {
       showDiv('start');
       clearItems();
@@ -123,13 +123,13 @@ function formSubmitEvent() {
   searchForm.dispatchEvent(new CustomEvent('submit', { cancelable: true }));
 }
 
-async function callApi(searchText, location, args) {
+async function callApi(searchText, location, args, searchFieldName = 's') {
   const apiBase = 'air-search/v1/';
   const res = await fetch(`${air_search_settings.rest_api_base}${apiBase + location}/${searchText}${args}`, { method: 'GET' });
 
   let urlArgs = `${args}airloc=${location}`;
   if (searchText) {
-    urlArgs += `&s=${searchText}`;
+    urlArgs += `&${searchFieldName}=${searchText}`;
   }
   window.history.pushState(null, '', urlArgs);
   clearItemCounts();
@@ -154,15 +154,15 @@ async function callApi(searchText, location, args) {
   }
 
   showDiv('results');
-  printItems(output, searchText, location, args);
+  printItems(output, searchText, location, args, searchFieldName);
 }
 
-function printItems(data, searchText, location, args) {
+function printItems(data, searchText, location, args, searchFieldName) {
   clearItems();
   hideResultContainers();
 
   updateItemCounts(data.total_items);
-  updatePagination(data.pagination, searchText, location, args);
+  updatePagination(data.pagination, searchText, location, args, searchFieldName);
   data.items.forEach((item, index) => {
     const targetParent = document.querySelector(`#${item.target}`);
     const targetButton = document.querySelector(`button[aria-controls="${item.target}"]`);
@@ -252,7 +252,7 @@ function hideResultContainers() {
   }
 }
 
-function updatePagination(newPagination, searchText, location, args) {
+function updatePagination(newPagination, searchText, location, args, searchFieldName = 's') {
   const pagDiv = document.querySelector(`#${air_search_settings.pagination_id}`);
   if (pagDiv) {
     args = args.replace(/air-page=[0-9]+&?/i, '');
@@ -274,7 +274,7 @@ function updatePagination(newPagination, searchText, location, args) {
         if (searchContainer) {
           searchContainer.setAttribute('pagination', true);
         }
-        callApi(searchText, location, args);
+        callApi(searchText, location, args, searchFieldName);
       });
     });
   }
