@@ -7,7 +7,7 @@
  * Author URI: https://dude.fi
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.0.13
+ * Version: 1.0.14
  *
  * @package air-search
  */
@@ -16,7 +16,7 @@ namespace Air_Search;
 
 defined( 'ABSPATH' ) || exit;
 
-const PLUGIN_VERSION = '1.0.13';
+const PLUGIN_VERSION = '1.0.14';
 
 include plugin_dir_path( __FILE__ ) . '/query.php';
 include plugin_dir_path( __FILE__ ) . '/helpers.php';
@@ -28,6 +28,7 @@ function enqueue_scripts() {
   wp_localize_script( 'air-search-scripts', 'air_search_settings', [
     'search_form_id' => apply_filters( 'air_search_form_id', 'air-search-form' ),
     'search_container_id' => apply_filters( 'air_search_search_container_id', 'air-search-container' ),
+    'search_text_field_id' => apply_filters( 'air_search_text_field_id', 'search-text' ),
     'items_container_id' => apply_filters( 'air_search_items_container_id', 'items' ),
     'pagination_id' => apply_filters( 'air_search_pagination_id', 'air-search-pagination' ),
     'fallback_id' => apply_filters( 'air_search_fallback_id', 'air-search-fallback' ),

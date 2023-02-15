@@ -91,9 +91,9 @@ Add your search location to the form element as `data-location` and id as `air-s
 ```html
   <form class="search-form" data-location="general" id="air-search-form">
 ```
-* Search field should have its `name` as `s`
+* Search field should have its `id` as `search-text` (can be changed with hooks).
 ```html
-  <input type="text" name="s">
+  <input type="text" id="search-text">
 ````
 * Make sure your inputs/selects names are same as in `field_mappings`
   * Supported inputs are radio and checkbox
@@ -201,6 +201,7 @@ Shown when no results are found.
 
 * `add_filter( 'air_search_form_id', $id )`
 * `add_filter( 'air_search_results_container_id', $id )`
+* `add_filter( 'air_search_text_field_id', $id )`
 * `add_filter( 'air_search_items_container_id', $id )`
 * `add_filter( 'air_search_pagination_id', $id )`
 * `add_filter( 'air_search_fallback_id', $id )`

@@ -1,3 +1,10 @@
+### 1.0.14: 2023-02-15
+## Changed
+* Search text input field from using name="s", to using id.
+
+## Added
+* air_search_text_field_id filter to change id that is given to search text input field.
+
 ### 1.0.13: 2023-02-13
 ## Changed
 * air_search_search_on_empty changed to a setting in search locations registration to allow different settings for each search location.

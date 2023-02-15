@@ -8,11 +8,12 @@ let latestSearchText;
 let latestArgs;
 const searchForm = document.querySelector(`#${air_search_settings.search_form_id}`);
 if (searchForm) {
+    const searchField = searchForm.querySelector(`#${air_search_settings.search_text_field_id}`);
   searchForm.addEventListener('submit', (event) => {
     event.preventDefault();
     let searchText = '';
-    if (event.target.querySelector('input[name="s"]')) {
-      searchText = event.target.querySelector('input[name="s"]').value;
+    if (searchField) {
+      searchText = searchField.value;
     }
     latestSearchText = searchText;
     const { location } = event.target.dataset;
@@ -63,8 +64,8 @@ if (searchForm) {
   });
 
   // Clear the textfield when pressing the escape key
-  if (searchForm.querySelector('input[name="s"]')) {
-    searchForm.querySelector('input[name="s"]').addEventListener('keydown', (event) => {
+  if (searchField) {
+    searchField.addEventListener('keydown', (event) => {
       if (event.keyCode === 27) {
         event.target.value = '';
         showDiv('start');
@@ -79,7 +80,6 @@ if (searchForm) {
   const doneTypingInterval = parseInt(air_search_settings.typing_time, 10);
   if (Number.isInteger(doneTypingInterval)) {
     let typingTimer;
-    const searchField = searchForm.querySelector('input[name="s"]');
     if (searchField) {
       let minSearchLength = Math.abs(air_search_settings.min_search_length);
       if (!minSearchLength) {
