@@ -93,8 +93,9 @@ Add your search location to the form element as `data-location` and id as `air-s
 ```
 
 #### Search text input
-If air-search is used as a replacement for normal search
-*Search field should have its `name` as `s`
+If air-search is used as a replacement for normal search.
+
+* Search field should have its `name` as `s`
 ```html
   <input type="text" name="s">
 ```
