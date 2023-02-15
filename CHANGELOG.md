@@ -1,3 +1,7 @@
+### 1.0.16: 2023-02-15
+## Fixed
+* Search on empty setting.
+
 ### 1.0.15: 2023-02-15
 ## Fixed
 * Search text input field functionality when using air-search as replacement for WP default search.

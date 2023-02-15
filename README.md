@@ -13,6 +13,7 @@ If you are using Air-light starter theme you can register your locations in your
 ```php
   'search_locations' => [
     'general' => [
+      'search_on_empty' => true, // Enables searching on empty fields, disables start search state. Accepts true as a boolean or string.
       'query_args' => [
         'posts_per_page' => '7',
       ],
