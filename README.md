@@ -91,9 +91,18 @@ Add your search location to the form element as `data-location` and id as `air-s
 ```html
   <form class="search-form" data-location="general" id="air-search-form">
 ```
-* Search field should have its `id` as `search-text` (can be changed with hooks).
+
+#### Search text input
+If air-search is used as a replacement for normal search
+*Search field should have its `name` as `s`
 ```html
-  <input type="text" id="search-text">
+  <input type="text" name="s">
+```
+
+If air-search is used as a separate search from normal WP search
+* Search field should have its `name` as anything but `s` and `id` as `search-text` (can be changed with hooks).
+```html
+  <input type="text" name="not-s" id="search-text">
 ````
 * Make sure your inputs/selects names are same as in `field_mappings`
   * Supported inputs are radio and checkbox

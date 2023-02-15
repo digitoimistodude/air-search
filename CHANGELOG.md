@@ -1,3 +1,7 @@
+### 1.0.15: 2023-02-15
+## Fixed
+* Search text input field functionality when using air-search as replacement for WP default search.
+
 ### 1.0.14: 2023-02-15
 ## Changed
 * Search text input field from using name="s", to using id.

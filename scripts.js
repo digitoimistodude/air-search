@@ -8,7 +8,10 @@ let latestSearchText;
 let latestArgs;
 const searchForm = document.querySelector(`#${air_search_settings.search_form_id}`);
 if (searchForm) {
-    const searchField = searchForm.querySelector(`#${air_search_settings.search_text_field_id}`);
+  let searchField = searchForm.querySelector('input[name="s"]');
+  if (!searchField) {
+    searchField = searchForm.querySelector(`#${air_search_settings.search_text_field_id}`);
+  }
   searchForm.addEventListener('submit', (event) => {
     event.preventDefault();
     let searchText = '';
