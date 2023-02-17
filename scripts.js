@@ -8,6 +8,7 @@ let latestSearchText;
 let latestArgs;
 const searchForm = document.querySelector(`#${air_search_settings.search_form_id}`);
 if (searchForm) {
+  let searchFieldName = '';
   let searchField = searchForm.querySelector('input[name="s"]');
   if (!searchField) {
     searchField = searchForm.querySelector(`#${air_search_settings.search_text_field_id}`);
@@ -17,6 +18,7 @@ if (searchForm) {
     let searchText = '';
     if (searchField) {
       searchText = searchField.value;
+      searchFieldName = searchField.name;
     }
     latestSearchText = searchText;
     const { location } = event.target.dataset;
@@ -57,7 +59,7 @@ if (searchForm) {
     clearPagination();
     showDiv('loading');
     if (location && ((searchText || args !== '?') || searchOnEmpty)) {
-      callApi(searchText, location, args, searchField.name);
+      callApi(searchText, location, args, searchFieldName);
     } else {
       showDiv('start');
       clearItems();

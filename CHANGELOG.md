@@ -1,3 +1,7 @@
+### 1.0.18: 2023-02-17
+## Fixed
+* Error related to getting text search fields name.
+
 ### 1.0.17: 2023-02-15
 ## Fixed
 * Set search text in url with the same key as text field name is.
