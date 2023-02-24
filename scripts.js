@@ -118,6 +118,15 @@ if (searchForm) {
       });
     }
   }
+
+  if (searchField) {
+    const urlSearch = window.location.search;
+    const urlParams = new URLSearchParams(urlSearch);
+    if (urlParams.has(searchField.name)) {
+      // searchField.focus();
+      searchField.focus({ preventScroll: true });
+    }
+  }
 }
 
 function formSubmitEvent() {

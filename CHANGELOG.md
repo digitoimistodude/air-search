@@ -1,3 +1,7 @@
+### 1.0.19: 2023-02-24
+## Added
+* Set focus to search text field if url has a parameter with its name
+
 ### 1.0.18: 2023-02-17
 ## Fixed
 * Error related to getting text search fields name.
