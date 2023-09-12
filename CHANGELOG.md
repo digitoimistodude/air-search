@@ -1,3 +1,7 @@
+### 1.0.20: 2023-09-12
+## Added
+* Added nonce to allow usage of logged in user during rest api calls.
+
 ### 1.0.19: 2023-02-24
 ## Added
 * Set focus to search text field if url has a parameter with its name

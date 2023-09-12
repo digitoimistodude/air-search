@@ -136,7 +136,14 @@ function formSubmitEvent() {
 
 async function callApi(searchText, location, args, searchFieldName = 's') {
   const apiBase = 'air-search/v1/';
-  const res = await fetch(`${air_search_settings.rest_api_base}${apiBase + location}/${searchText}${args}`, { method: 'GET' });
+  const res = await fetch(`${air_search_settings.rest_api_base}${apiBase + location}/${searchText}${args}`, {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'X-WP-Nonce': air_search_settings.nonce,
+    }),
+  });
 
   let urlArgs = `${args}airloc=${location}`;
   if (searchText) {

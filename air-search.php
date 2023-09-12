@@ -40,6 +40,7 @@ function enqueue_scripts() {
     'disable_checkbox_auto_search' => apply_filters( 'air_search_disable_checkbox_auto_search', false ),
     'disable_select_auto_search' => apply_filters( 'air_search_disable_select_auto_search', false ),
     'search_on_empty' => wp_json_encode( get_location_search_on_empty_setting() ),
+    'nonce'           => wp_create_nonce( 'wp_rest' ),
   ] );
 } // end enqueue_scripts
 
