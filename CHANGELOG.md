@@ -1,3 +1,7 @@
+### 1.0.22: 2024-10-03
+## Added
+* Option to set value of meta query in field mapping instead of form field
+
 ### 1.0.21: 2024-10-03
 ## Added
 * Added optional compare and type options for meta queries

@@ -98,7 +98,7 @@ function do_search_query( $params ) {
       if ( 'meta' === $data['type'] ) {
         $meta_query[] = [
           'key'     => $data['key'],
-          'value'   => $_GET[ $field_key ], // phpcs:ignore
+          'value'   => isset( $data['value'] ) ? $data['value'] : $_GET[ $field_key ], // phpcs:ignore
           'compare' => isset( $data['compare'] ) ? $data['compare'] : '=',
           'type'    => isset( $data['type'] ) ? $data['type'] : 'CHAR',
         ];
