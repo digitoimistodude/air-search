@@ -1,3 +1,7 @@
+### 1.0.21: 2024-10-03
+## Added
+* Added optional compare and type options for meta queries
+
 ### 1.0.20: 2023-09-12
 ## Added
 * Added nonce to allow usage of logged in user during rest api calls.
